@@ -10,11 +10,13 @@
 <meta content="Ira E McDonald" name="author">
 <meta content="Carsten Bormann" name="author">
 <meta content="
-       This documents defines the method and bindings used to conduct Time-based Uni-Directional Attestation (TUDA) between two RATS (Remote ATtestation procedureS) entities over the Internet.
+       This document defines the method and bindings used to convey Evidence via Time-based Uni-Directional Attestation (TUDA) in Remote ATtestation procedureS (RATS).
 TUDA does not require a challenge-response handshake and thereby does not rely on the conveyance of a nonce to prove freshness of remote attestation Evidence.
-Conversely, TUDA enables the creation of Secure Audit Logs that can constitute Evidence about current and past operational states of an Attester.
-As a prerequisite for TUDA, every RATS entity requires access to a trustable and synchronized time-source.
-Per default, in TUDA this is a Time Stamp Authority (TSA) issuing signed Time Stamp Tokens (TST) and taking on the role of a Handle Distributor. 
+TUDA enables the creation of Secure Audit Logs that can constitute believable Evidence about both current and past operational states of an Attester.
+In TUDA, RATS entities require access to a Handle Distributor to which a trustable and synchronized time-source is available.
+The Handle Distributor takes on the role of a Time Stamp Authority (TSA) to distribute Handles incorporating Time Stamp Tokens (TST) to the RATS entities.
+RATS require an Attesting Environment that generates believable Evidence.
+While a TPM is used as the corresponding root of trust in this specification, any other type of root of trust can be used with TUDA. 
     " name="description">
 <meta content="xml2rfc 3.5.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
@@ -875,11 +877,13 @@ address div.right {
 <h1 id="title">Time-Based Uni-Directional Attestation</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This documents defines the method and bindings used to conduct Time-based Uni-Directional Attestation (TUDA) between two RATS (Remote ATtestation procedureS) entities over the Internet.
+<p id="section-abstract-1">This document defines the method and bindings used to convey Evidence via Time-based Uni-Directional Attestation (TUDA) in Remote ATtestation procedureS (RATS).
 TUDA does not require a challenge-response handshake and thereby does not rely on the conveyance of a nonce to prove freshness of remote attestation Evidence.
-Conversely, TUDA enables the creation of Secure Audit Logs that can constitute Evidence about current and past operational states of an Attester.
-As a prerequisite for TUDA, every RATS entity requires access to a trustable and synchronized time-source.
-Per default, in TUDA this is a Time Stamp Authority (TSA) issuing signed Time Stamp Tokens (TST) and taking on the role of a Handle Distributor.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+TUDA enables the creation of Secure Audit Logs that can constitute believable Evidence about both current and past operational states of an Attester.
+In TUDA, RATS entities require access to a Handle Distributor to which a trustable and synchronized time-source is available.
+The Handle Distributor takes on the role of a Time Stamp Authority (TSA) to distribute Handles incorporating Time Stamp Tokens (TST) to the RATS entities.
+RATS require an Attesting Environment that generates believable Evidence.
+While a TPM is used as the corresponding root of trust in this specification, any other type of root of trust can be used with TUDA.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-discussion-venues">
@@ -939,212 +943,203 @@ Per default, in TUDA this is a Time Stamp Authority (TSA) issuing signed Time St
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
 <a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.1">
+<nav class="toc"><ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a><a href="#section-toc.1-1.1.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.1.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-forward-authenticity" class="xref">Forward Authenticity</a><a href="#section-toc.1-1.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.1.2.2">
-                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="xref">1.2</a>.  <a href="#name-handle-distributor" class="xref">Handle Distributor</a><a href="#section-toc.1-1.1.2.2.1" class="pilcrow">¶</a></p>
+              <li class="compact ulEmpty toc" id="section-toc.1-1.1.2.2">
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="xref">1.2</a>.  <a href="#name-tuda-objectives" class="xref">TUDA Objectives</a><a href="#section-toc.1-1.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.1.2.3">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.1.2.3">
                 <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="xref">1.3</a>.  <a href="#name-terminology" class="xref">Terminology</a><a href="#section-toc.1-1.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-evidence-in-tuda" class="xref">Evidence in TUDA</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
+          <li class="compact ulEmpty toc" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-remote-attestation-principl" class="xref">Remote Attestation Principles</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-authenticity-of-evidence" class="xref">Authenticity of Evidence</a><a href="#section-toc.1-1.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-generating-evidence-about-s" class="xref">Generating Evidence about Software Component Integrity</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-measurements-and-digests-ge" class="xref">Measurements and Digests Generated by an Attester</a><a href="#section-toc.1-1.3.2.1.1" class="pilcrow">¶</a></p>
+              <li class="compact ulEmpty toc" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-generating-evidence-about-s" class="xref">Generating Evidence about Software Component Integrity</a><a href="#section-toc.1-1.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-attesting-environments-and-" class="xref">Attesting Environments and Roots of Trust</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
+              <li class="compact ulEmpty toc" id="section-toc.1-1.2.2.3">
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="xref">2.3</a>.  <a href="#name-measurements-and-digests-ge" class="xref">Measurements and Digests Generated by an Attester</a><a href="#section-toc.1-1.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="xref">3.3</a>.  <a href="#name-primitive-operations-for-re" class="xref">Primitive Operations for Remote Attestation</a><a href="#section-toc.1-1.3.2.3.1" class="pilcrow">¶</a></p>
+              <li class="compact ulEmpty toc" id="section-toc.1-1.2.2.4">
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="xref">2.4</a>.  <a href="#name-attesting-environments-and-" class="xref">Attesting Environments and Roots of Trust</a><a href="#section-toc.1-1.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
-            </ul>
-</li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-remote-attestation-principl" class="xref">Remote Attestation Principles</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-indeterministic-measurement" class="xref">Indeterministic Measurements</a><a href="#section-toc.1-1.4.2.1.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-principles-of-uni-direction" class="xref">Principles of Uni-Directional and Time-Based Attestation</a><a href="#section-toc.1-1.4.2.2.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-tuda-attesting-environment-" class="xref">TUDA Attesting Environment Requirements</a><a href="#section-toc.1-1.4.2.3.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.4.2.4">
-                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="xref">4.4</a>.  <a href="#name-tuda-handle-distributor-tim" class="xref">TUDA Handle Distributor: Time Stamp Authority</a><a href="#section-toc.1-1.4.2.4.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.4.2.5">
-                <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="xref">4.5</a>.  <a href="#name-information-elements-and-co" class="xref">Information Elements and Conveyance</a><a href="#section-toc.1-1.4.2.5.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.4.2.6">
-                <p id="section-toc.1-1.4.2.6.1"><a href="#section-4.6" class="xref">4.6</a>.  <a href="#name-tuda-objectives" class="xref">TUDA Objectives</a><a href="#section-toc.1-1.4.2.6.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.4.2.7">
-                <p id="section-toc.1-1.4.2.7.1"><a href="#section-4.7" class="xref">4.7</a>.  <a href="#name-hardware-dependencies" class="xref">Hardware Dependencies</a><a href="#section-toc.1-1.4.2.7.1" class="pilcrow">¶</a></p>
+              <li class="compact ulEmpty toc" id="section-toc.1-1.2.2.5">
+                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="xref">2.5</a>.  <a href="#name-indeterministic-measurement" class="xref">Indeterministic Measurements</a><a href="#section-toc.1-1.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.5">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-tuda-principles-and-require" class="xref">TUDA Principles and Requirements</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-attesting-environment-requi" class="xref">Attesting Environment Requirements</a><a href="#section-toc.1-1.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="compact ulEmpty toc" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-handle-distributor-requirem" class="xref">Handle Distributor Requirements: Time Stamp Authority</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact ulEmpty toc" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-information-elements-and-co" class="xref">Information Elements and Conveyance</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="compact ulEmpty toc" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-tuda-core-concept" class="xref">TUDA Core Concept</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.5.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.5.2.1">
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-tpm-specific-terms" class="xref">TPM Specific Terms</a><a href="#section-toc.1-1.5.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.5.2.2">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.5.2.2">
                 <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-certificates" class="xref">Certificates</a><a href="#section-toc.1-1.5.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.6">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-the-tuda-protocol-family" class="xref">The TUDA Protocol Family</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.6.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-tuda-information-elements-u" class="xref">TUDA Information Elements Update Cycles</a><a href="#section-toc.1-1.6.2.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.7">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-sync-base-protocol" class="xref">Sync Base Protocol</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.8">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.9">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.10">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.10">
             <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-contributors" class="xref">Contributors</a><a href="#section-toc.1-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.11">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.11">
             <p id="section-toc.1-1.11.1"><a href="#section-11" class="xref">11</a>. <a href="#name-references" class="xref">References</a><a href="#section-toc.1-1.11.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.11.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.11.2.1">
                 <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="xref">11.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.11.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.11.2.2">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.11.2.2">
                 <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="xref">11.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a><a href="#section-toc.1-1.11.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.12">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.12">
             <p id="section-toc.1-1.12.1"><a href="#section-appendix.a" class="xref">Appendix A</a>.  <a href="#name-rest-realization" class="xref">REST Realization</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.13">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#section-appendix.b" class="xref">Appendix B</a>.  <a href="#name-snmp-realization" class="xref">SNMP Realization</a><a href="#section-toc.1-1.13.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.13.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.13.2.1">
                 <p id="section-toc.1-1.13.2.1.1"><a href="#section-b.1" class="xref">B.1</a>.  <a href="#name-structure-of-tuda-mib" class="xref">Structure of TUDA MIB</a><a href="#section-toc.1-1.13.2.1.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.13.2.1.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.13.2.1.2.1">
                     <p id="section-toc.1-1.13.2.1.2.1.1"><a href="#section-b.1.1" class="xref">B.1.1</a>.  <a href="#name-cycle-index" class="xref">Cycle Index</a><a href="#section-toc.1-1.13.2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.13.2.1.2.2">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.13.2.1.2.2">
                     <p id="section-toc.1-1.13.2.1.2.2.1"><a href="#section-b.1.2" class="xref">B.1.2</a>.  <a href="#name-instance-index" class="xref">Instance Index</a><a href="#section-toc.1-1.13.2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.13.2.1.2.3">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.13.2.1.2.3">
                     <p id="section-toc.1-1.13.2.1.2.3.1"><a href="#section-b.1.3" class="xref">B.1.3</a>.  <a href="#name-fragment-index" class="xref">Fragment Index</a><a href="#section-toc.1-1.13.2.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.13.2.2">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.13.2.2">
                 <p id="section-toc.1-1.13.2.2.1"><a href="#section-b.2" class="xref">B.2</a>.  <a href="#name-relationship-to-host-resour" class="xref">Relationship to Host Resources MIB</a><a href="#section-toc.1-1.13.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.13.2.3">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.13.2.3">
                 <p id="section-toc.1-1.13.2.3.1"><a href="#section-b.3" class="xref">B.3</a>.  <a href="#name-relationship-to-entity-mib" class="xref">Relationship to Entity MIB</a><a href="#section-toc.1-1.13.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.13.2.4">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.13.2.4">
                 <p id="section-toc.1-1.13.2.4.1"><a href="#section-b.4" class="xref">B.4</a>.  <a href="#name-relationship-to-other-mibs" class="xref">Relationship to Other MIBs</a><a href="#section-toc.1-1.13.2.4.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.13.2.5">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.13.2.5">
                 <p id="section-toc.1-1.13.2.5.1"><a href="#section-b.5" class="xref">B.5</a>.  <a href="#name-definition-of-tuda-mib" class="xref">Definition of TUDA MIB</a><a href="#section-toc.1-1.13.2.5.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.14">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.14">
             <p id="section-toc.1-1.14.1"><a href="#section-appendix.c" class="xref">Appendix C</a>.  <a href="#name-yang-realization" class="xref">YANG Realization</a><a href="#section-toc.1-1.14.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.15">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.15">
             <p id="section-toc.1-1.15.1"><a href="#section-appendix.d" class="xref">Appendix D</a>.  <a href="#name-realization-with-tpm-functi" class="xref">Realization with TPM functions</a><a href="#section-toc.1-1.15.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.15.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.15.2.1">
                 <p id="section-toc.1-1.15.2.1.1"><a href="#section-d.1" class="xref">D.1</a>.  <a href="#name-tpm-functions" class="xref">TPM Functions</a><a href="#section-toc.1-1.15.2.1.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.15.2.1.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.15.2.1.2.1">
                     <p id="section-toc.1-1.15.2.1.2.1.1"><a href="#section-d.1.1" class="xref">D.1.1</a>.  <a href="#name-tick-session-and-tick-stamp" class="xref">Tick-Session and Tick-Stamp</a><a href="#section-toc.1-1.15.2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.1.2.2">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.1.2.2">
                     <p id="section-toc.1-1.15.2.1.2.2.1"><a href="#section-d.1.2" class="xref">D.1.2</a>.  <a href="#name-platform-configuration-regi" class="xref">Platform Configuration Registers (PCRs)</a><a href="#section-toc.1-1.15.2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.1.2.3">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.1.2.3">
                     <p id="section-toc.1-1.15.2.1.2.3.1"><a href="#section-d.1.3" class="xref">D.1.3</a>.  <a href="#name-pcr-restricted-keys" class="xref">PCR restricted Keys</a><a href="#section-toc.1-1.15.2.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.1.2.4">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.1.2.4">
                     <p id="section-toc.1-1.15.2.1.2.4.1"><a href="#section-d.1.4" class="xref">D.1.4</a>.  <a href="#name-certifyinfo" class="xref">CertifyInfo</a><a href="#section-toc.1-1.15.2.1.2.4.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.2">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.2">
                 <p id="section-toc.1-1.15.2.2.1"><a href="#section-d.2" class="xref">D.2</a>.  <a href="#name-ie-generation-procedures-fo" class="xref">IE Generation Procedures for TPM 1.2</a><a href="#section-toc.1-1.15.2.2.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.15.2.2.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.15.2.2.2.1">
                     <p id="section-toc.1-1.15.2.2.2.1.1"><a href="#section-d.2.1" class="xref">D.2.1</a>.  <a href="#name-aik-and-aik-certificate" class="xref">AIK and AIK Certificate</a><a href="#section-toc.1-1.15.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.2.2.2">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.2.2.2">
                     <p id="section-toc.1-1.15.2.2.2.2.1"><a href="#section-d.2.2" class="xref">D.2.2</a>.  <a href="#name-synchronization-token" class="xref">Synchronization Token</a><a href="#section-toc.1-1.15.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.2.2.3">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.2.2.3">
                     <p id="section-toc.1-1.15.2.2.2.3.1"><a href="#section-d.2.3" class="xref">D.2.3</a>.  <a href="#name-restrictioninfo" class="xref">RestrictionInfo</a><a href="#section-toc.1-1.15.2.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.2.2.4">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.2.2.4">
                     <p id="section-toc.1-1.15.2.2.2.4.1"><a href="#section-d.2.4" class="xref">D.2.4</a>.  <a href="#name-measurement-log" class="xref">Measurement Log</a><a href="#section-toc.1-1.15.2.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.2.2.5">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.2.2.5">
                     <p id="section-toc.1-1.15.2.2.2.5.1"><a href="#section-d.2.5" class="xref">D.2.5</a>.  <a href="#name-implicit-attestation" class="xref">Implicit Attestation</a><a href="#section-toc.1-1.15.2.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.2.2.6">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.2.2.6">
                     <p id="section-toc.1-1.15.2.2.2.6.1"><a href="#section-d.2.6" class="xref">D.2.6</a>.  <a href="#name-attestation-verification-ap" class="xref">Attestation Verification Approach</a><a href="#section-toc.1-1.15.2.2.2.6.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.3">
+              <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.3">
                 <p id="section-toc.1-1.15.2.3.1"><a href="#section-d.3" class="xref">D.3</a>.  <a href="#name-ie-generation-procedures-for" class="xref">IE Generation Procedures for TPM 2.0</a><a href="#section-toc.1-1.15.2.3.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.15.2.3.2.1">
+<ul class="compact ulEmpty toc">
+<li class="compact ulEmpty toc" id="section-toc.1-1.15.2.3.2.1">
                     <p id="section-toc.1-1.15.2.3.2.1.1"><a href="#section-d.3.1" class="xref">D.3.1</a>.  <a href="#name-aik-and-aik-certificate-2" class="xref">AIK and AIK Certificate</a><a href="#section-toc.1-1.15.2.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.3.2.2">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.3.2.2">
                     <p id="section-toc.1-1.15.2.3.2.2.1"><a href="#section-d.3.2" class="xref">D.3.2</a>.  <a href="#name-synchronization-token-2" class="xref">Synchronization Token</a><a href="#section-toc.1-1.15.2.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.3.2.3">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.3.2.3">
                     <p id="section-toc.1-1.15.2.3.2.3.1"><a href="#section-d.3.3" class="xref">D.3.3</a>.  <a href="#name-measurement-log-2" class="xref">Measurement Log</a><a href="#section-toc.1-1.15.2.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.3.2.4">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.3.2.4">
                     <p id="section-toc.1-1.15.2.3.2.4.1"><a href="#section-d.3.4" class="xref">D.3.4</a>.  <a href="#name-explicit-time-based-attesta" class="xref">Explicit time-based Attestation</a><a href="#section-toc.1-1.15.2.3.2.4.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.15.2.3.2.5">
+                  <li class="compact ulEmpty toc" id="section-toc.1-1.15.2.3.2.5">
                     <p id="section-toc.1-1.15.2.3.2.5.1"><a href="#section-d.3.5" class="xref">D.3.5</a>.  <a href="#name-sync-proof" class="xref">Sync Proof</a><a href="#section-toc.1-1.15.2.3.2.5.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.16">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.16">
             <p id="section-toc.1-1.16.1"><a href="#section-appendix.e" class="xref"></a><a href="#name-acknowledgements" class="xref">Acknowledgements</a><a href="#section-toc.1-1.16.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.17">
+          <li class="compact ulEmpty toc" id="section-toc.1-1.17">
             <p id="section-toc.1-1.17.1"><a href="#section-appendix.f" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.17.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
@@ -1156,23 +1151,31 @@ Per default, in TUDA this is a Time Stamp Authority (TSA) issuing signed Time St
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Remote ATtestation procedureS (RATS) describe the attempt to determine and appraise system properties, such as integrity and trustworthiness, of a communication partner -- the Attester -- over the Internet to another communication partner -- the Verifier -- without direct access.
-TUDA uses the architectural constituents of the RATS Architecture <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span> that defines the roles Attester and Verifier in detail.
-The RATS Architecture also defines Conceptual Messages conveyed between these roles.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">TUDA creates and conveys a specific type of Conceptual Message called Evidence: an integrity protected and tamper-evident composition of trustworthiness Claims that are collected from an Attester's Target Environments (defined in section 4.2. of <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>). Evidence is consumed and appraised by a Verifier in order to eventually create Attestation Results. Attestation Results are the output of RATS to support security decisions made by Relying Parties.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">In contrast to traditional bi-directional challenge-response protocols (as defined in section 8.1 of <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span>), TUDA enables a uni-directional conveyance of attestation Evidence that allows for providing attestation information without solicitation (as defined in section 8.2 of <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span>). Exemplary applications of TUDA protocol family are the creation of beacons in vehicular environments (<span>[<a href="#IEEE1609" class="xref">IEEE1609</a>]</span>) or the notification content of event streams created by YANG Push (<span>[<a href="#RFC8641" class="xref">RFC8641</a>]</span>, <span>[<a href="#RFC8640" class="xref">RFC8640</a>]</span>, <span>[<a href="#RFC8639" class="xref">RFC8639</a>]</span>).<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-1">Remote ATtestation procedureS (RATS) describe the attempt to determine and appraise system properties, such as integrity and trustworthiness, of a remote peer -- the Attester -- by the use of a Verifier in support of Relying Parties that intend to interact with the Attester. The Verifier carries the burden of appraisal of detailed Evidence about an Attester's trustworthiness. Evidence is generated by the Attester and consumed by the Verifier. To support security decisions, the Verifier generates digestable Attestation Results that can be easily consumed by Relying Parties. The RATS architecture specifies the corresponding concepts and terms <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">TUDA uses the architectural constituents of the RATS Architecture, such as the roles Attester and Verifier, and defines a method to convey Conceptual Messages between them. TUDA uses the Uni-Directional Remote Attestation interaction model described in <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span>. While the Conceptual Message focussed on in this document is RATS Evidence, any type of Conceptual Message content that requires a believable indication about the message's content freshness can be conveyed with TUDA (e.g. Attestation Results).<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">The conveyance of Evidence in RATS must ensure that Evidence always remains integrity protected, tamper-evident, originates from a trustable entity (or group of entities), and is accompanied by a proof of its freshness.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">In contrast to bi-directional interactions as described by Challenge/Response Remote Attestation in <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span>, TUDA enables uni-directional conveyance in the interactions between Attester and Verifier. TUDA allows a Verifier to receive Evidence from an Attester without solicitation. Conversely, it allows a Verifier to retrieve Evidence from an Attester without it being generated ad-hoc. Exemplary applications of TUDA are the creation of beacons in vehicular environments <span>[<a href="#IEEE1609" class="xref">IEEE1609</a>]</span> or authentication mechanisms based on EAP <span>[<a href="#RFC5247" class="xref">RFC5247</a>]</span>.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">The generation of Evidence in RATS requires an Attesting Environment. In this specification, the root of trust acting as an Attesting Environment is a Trusted Platform Module (TPM, see <span>[<a href="#TPM12" class="xref">TPM12</a>]</span> and <span>[<a href="#TPM2" class="xref">TPM2</a>]</span>). The Protected Capabilities <span>[<a href="#TCGGLOSS" class="xref">TCGGLOSS</a>]</span> provided by a TPM support various activities in RATS, e.g., Claims collection and Evidence generation.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">A trusted coupling of Evidence generation with a global timescale is enabled via a Handle Distributor.
+Handles generated by a Handle Distributor can include nonces, signed timestamps, or other structured or opaque content used as qualifying data in Evidence generation.
+In TUDA, all RATS entities, such as the entities taking on the roles of Attester and Verifier, can receive signed timestamps from the Handle Distributor.
+These trusted timestamps replace nonces in Evidence generation and Evidence appraisal <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span>.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <div id="forward-authenticity">
 <section id="section-1.1">
         <h3 id="name-forward-authenticity">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-forward-authenticity" class="section-name selfRef">Forward Authenticity</a>
         </h3>
-<p id="section-1.1-1">Nonces enable an implicit time-keeping in which the freshness of evidence is inferred by recentness. Recentness is estimated via the time interval between sending a nonce as part of a challenge for Evidence and the reception of Evidence based on that nonce as outlined in the interaction model depicted in section 8.1 in <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span>. Conversely, the omission of nonces in TUDA allows for explicit time-keeping where freshness is not inferred from recentness. Instead, a cryptographic binding of a trusted synchronization to a global timescale in the Evidence itself allows for Evidence that can prove past operational states of an Attester. To capture and support this concept, this document introduces the term Forward Authenticity.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-1">Nonces enable an implicit time-keeping in which the freshness of Evidence is inferred by recentness.
+Recentness is estimated via the time interval between sending a nonce as part of a challenge for Evidence and the reception of Evidence based on that nonce (as outlined in the interaction model depicted in section 8.1 in <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span>).
+Conversely, the omission of nonces in TUDA allows for explicit time-keeping where freshness is not inferred from recentness.
+Instead, a cryptographic binding of a trusted synchronization to a global timescale in the Evidence itself allows for Evidence that can prove past operational states of an Attester.
+To capture and support this concept, this document introduces the term Forward Authenticity.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-1.1-2">
           <dt id="section-1.1-2.1">
 Forward Authenticity:  </dt>
           <dd style="margin-left: 1.5em" id="section-1.1-2.2">
             <p id="section-1.1-2.2.1">A property of secure communication protocols, in which later compromise of the long-term keys of a data origin does not compromise past authentication of data from that origin.
-FA is achieved by timely recording of assessments of the authenticity from Target Environments (via "audit logs" during "audit sessions") that are authorized for this purpose and trustworthy (e.g via endorsed Roots of Trusts), in a time frame much shorter than that expected for the compromise of the long-term keys.<a href="#section-1.1-2.2.1" class="pilcrow">¶</a></p>
+Forward Authenticity is achieved by timely recording of authenticity Claims from Target Environments (via "audit logs" during "audit sessions") that are authorized for this purpose and trustworthy (via endorsed roots of trusts, for example), in a time-frame much shorter than that expected for the compromise of the long-term keys.<a href="#section-1.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.1-2.3"></dt>
@@ -1183,12 +1186,28 @@ FA is achieved by timely recording of assessments of the authenticity from Targe
 </dl>
 </section>
 </div>
-<div id="handle-distributor">
+<div id="tuda-objectives">
 <section id="section-1.2">
-        <h3 id="name-handle-distributor">
-<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-handle-distributor" class="section-name selfRef">Handle Distributor</a>
+        <h3 id="name-tuda-objectives">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-tuda-objectives" class="section-name selfRef">TUDA Objectives</a>
         </h3>
-<p id="section-1.2-1">A trusted binding of a global timescale with Evidence is enabled in TUDA via a third party: the Handle Distributor. A Handle Distributor can provide centrally generated nonces, signed timestamps, or other handles used as qualifying data in Evidence generation. In TUDA, both the Attester and the Verifier receive signed timestamps from the Handle Distributor. These trusted timestamps replace nonces in Evidence generation and Evidence appraisal as specified in the remainder of this document.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-1">Time-Based Uni-directional Attestation is designed to:<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.2-2.1">increase the confidence in authentication and authorization procedures,<a href="#section-1.2-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.2-2.2">address the requirements of constrained-node networks,<a href="#section-1.2-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.2-2.3">support interaction models that do not maintain connection-state over time, such as REST architectures <span>[<a href="#REST" class="xref">REST</a>]</span>,<a href="#section-1.2-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.2-2.4">be able to leverage existing management interfaces, such as SNMP <span>[<a href="#RFC3411" class="xref">RFC3411</a>]</span>. RESTCONF <span>[<a href="#RFC8040" class="xref">RFC8040</a>]</span> or CoMI <span>[<a href="#I-D.ietf-core-comi" class="xref">I-D.ietf-core-comi</a>]</span> --- and corresponding bindings,<a href="#section-1.2-2.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.2-2.5">support broadcast and multicast schemes (e.g. <span>[<a href="#IEEE1609" class="xref">IEEE1609</a>]</span>),<a href="#section-1.2-2.5" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.2-2.6">be able to cope with temporary loss of connectivity, and to<a href="#section-1.2-2.6" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.2-2.7">provide trustworthy audit logs of past endpoint states.<a href="#section-1.2-2.7" class="pilcrow">¶</a>
+</li>
+        </ul>
 </section>
 </div>
 <div id="terminology">
@@ -1196,7 +1215,7 @@ FA is achieved by timely recording of assessments of the authenticity from Targe
         <h3 id="name-terminology">
 <a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
         </h3>
-<p id="section-1.3-1">This document uses the terms defined in the RATS architecture <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span> and RATS Reference Interaction Models <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span>.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<p id="section-1.3-1">This document uses the terms defined in the RATS Architecture <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span> and by the RATS Reference Interaction Models <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span>.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
 <p id="section-1.3-2">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
 NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
 "MAY", and "OPTIONAL" in this document are to be interpreted as
@@ -1206,195 +1225,202 @@ appear in all capitals, as shown here.<a href="#section-1.3-2" class="pilcrow">�
 </div>
 </section>
 </div>
-<div id="evidence-in-tuda">
-<section id="section-2">
-      <h2 id="name-evidence-in-tuda">
-<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-evidence-in-tuda" class="section-name selfRef">Evidence in TUDA</a>
-      </h2>
-<p id="section-2-1">Remote attestation Evidence is a set of trustworthiness claims (assertions about the Target Environments of an Attester) that are accompanied by a proof of their veracity -- typically a signature based on shielded, private and potentially restricted key material (used as an Authentication Secret as specified in section 6 of <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span>).
-As key material alone is typically not self-descriptive with respect to its intended use (its semantics), the Evidence created via TUDA is accompanied by two kinds of certificates that are cryptographically associated with a Trust Anchor (TA) <span>[<a href="#RFC4949" class="xref">RFC4949</a>]</span> via a certification path:<a href="#section-2-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-2-2.1">an Attestation Key (AK) Certificate (AK-Cert) that represents the attestation provenance of the Attesting Environment (see section 4.2. in <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>) that creates Evidence, and<a href="#section-2-2.1" class="pilcrow">¶</a>
-</li>
-        <li class="normal" id="section-2-2.2">an Endorsement Key (EK) Certificate (EK-Cert) that represents the protection characteristics of an Attesting Environment the AK is stored in.<a href="#section-2-2.2" class="pilcrow">¶</a>
-</li>
-      </ul>
-<p id="section-2-3">If a Verifier decides to trust the TA of both an AK-Cert and an EK-Cert presented by an Attester -- and thereby the included assertions about the system characteristics describing the Attester's Target Environments -- the Evidence created via TUDA by the Attester is considered trustable and believable.
-Ultimately, all trustable and believable Evidence is appraised by a Verifier in order to assess the trustworthiness of the corresponding Attester.<a href="#section-2-3" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="generating-evidence-about-software-component-integrity">
-<section id="section-3">
-      <h2 id="name-generating-evidence-about-s">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-generating-evidence-about-s" class="section-name selfRef">Generating Evidence about Software Component Integrity</a>
-      </h2>
-<p id="section-3-1">The TUDA protocol family uses hash values of all started software components as a basis to provide and create Evidence about the integrity of the software components of an Attester's Target Environments (see section 4.2. in <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>).
-This concept is implemented, for example, in the Linux kernel and is called the Linux Integrity Measurement Architecture (IMA) <span>[<a href="#Safford" class="xref">Safford</a>]</span>.
-Open source solutions, for example, based on <span>[<a href="#RFC5209" class="xref">RFC5209</a>]</span> use IMA to enable remote attestation <span>[<a href="#Steffens" class="xref">Steffens</a>]</span>.
-This section defines the processed data items, the requirements for system components, and corresponding operations to enable the generation of Evidence about software component integrity for TUDA.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<div id="measurements-and-digests-generated-by-an-attester">
-<section id="section-3.1">
-        <h3 id="name-measurements-and-digests-ge">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-measurements-and-digests-ge" class="section-name selfRef">Measurements and Digests Generated by an Attester</a>
-        </h3>
-<p id="section-3.1-1">A hash value of a software component is created before it is executed by Attesters.
-These hash values represent Claims that typically occur in large quantities and are referred to as a measurements.
-The Linux IMA feature is one way to generate these measurements on an Attester.
-Measurements are chained by Attesters using a rolling hash function.
-Each measurement added to the sequence of all measurements results in a new current hash value.
-The most recent (i.e., up-to-date) output of the rolling hash function that is chaining the created measurements is referred to as a digest.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="attesting-environments-and-roots-of-trust">
-<section id="section-3.2">
-        <h3 id="name-attesting-environments-and-">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-attesting-environments-and-" class="section-name selfRef">Attesting Environments and Roots of Trust</a>
-        </h3>
-<p id="section-3.2-1">The primitive operations used to generate the initial set of measurements at the beginning of an Attester's boot sequence MUST be provided by a Root of Trust for Measurement (RTM) that is a system component of the Attester. An RTM MUST be trusted via trust-relationships to TAs enabled by appropriate Endorsements (e.g.,EK-Certs). If a Verifier cannot trust an RTM, Evidence based on values generated by the RTM is considered invalid. RTMs MUST be accessible to the first Attesting Environment in Layered Attestation (see section 4.3. in <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>). A RTM MAY retain measurements until the first RTS becomes available in a Layered Attestation procedure.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">The primitive operations used to store and chain measurements via a rolling hash function MUST be provided by Roots of Trust for Storage (RTS) that are system components of the Attester. An RTS MUST be trusted via trust-relationships to TAs enabled by appropriate Endorsements (e.g.,EK-Certs). If a Verifier cannot trust an RTS, Evidence generated based on digest values acquired from the RTS is considered invalid. RTS MUST be accessible to all Attesting Environments that are chained in a Layered Attestation procedure.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">The primitive operations used to generate Evidence based on digests MUST be provided by Roots of Trust for Reporting (RTR) that are system components of the Attester. An RTR MUST be be trusted via trust-relationships to TAs enabled by appropriate Endorsements (e.g.,EK-Certs). If a Verifier cannot trust an RTR, Evidence generated by the RTR is considered invalid. All Attesting Environments of an Attester MUST be RTRs.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2-4">A concise definition of the terms RTM, RTS, and RTR can be found in the Trusted Computing Group (TCG) Glossary <span>[<a href="#TCGGLOSS" class="xref">TCGGLOSS</a>]</span>. An RTS and an RTR are often tightly coupled. Analogously, a Trusted Platform Module (TPM, see <span>[<a href="#TPM12" class="xref">TPM12</a>]</span> and <span>[<a href="#TPM2" class="xref">TPM2</a>]</span>) takes on the roles of an RTS and an RTR. The specification in this document is based on the use of a TPM. The protocol part of this specification can also be used with other RTS and RTR as long as essential requirements are satisfied (e.g. a trusted relative source of time, such as a tick-counter). A sequence of Layered Attestation using at least an RTM, RTS, and RTR enables an authenticated boot sequence typically referred to as Secure Boot.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="primitive-operations-for-remote-attestation">
-<section id="section-3.3">
-        <h3 id="name-primitive-operations-for-re">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-primitive-operations-for-re" class="section-name selfRef">Primitive Operations for Remote Attestation</a>
-        </h3>
-<p id="section-3.3-1">The primitive operation for processing measurements and adding them to a chain of measurements via a rolling hash function is called extend. Analogously, extend operations are provided by an RTS.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">The primitive operation for retrieving the current available digest value that is the result of the rolling hash function including a signature based on an Attestation Key is called quote. Analogously, quote operations are provided by an RTR.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<p id="section-3.3-3">TUDA requirements on (primitive) operations and the information elements processed by them are illustrated using pseudo code in Appendix C and D.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-</section>
-</div>
-</section>
-</div>
 <div id="remote-attestation-principles">
-<section id="section-4">
+<section id="section-2">
       <h2 id="name-remote-attestation-principl">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-remote-attestation-principl" class="section-name selfRef">Remote Attestation Principles</a>
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-remote-attestation-principl" class="section-name selfRef">Remote Attestation Principles</a>
       </h2>
-<p id="section-4-1">In essence, the TUDA protocol family is composed of three operations that are defined in <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span>. These generic definitions align with the definitions presented in <span>[<a href="#PRIRA" class="xref">PRIRA</a>]</span> and <span>[<a href="#TCGGLOSS" class="xref">TCGGLOSS</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4-2">
-        <dt id="section-4-2.1">
+<p id="section-2-1">Based on the RATS Architecture, the processing of TPM generated Evidence can be separated in three activities.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-2-2">
+        <dt id="section-2-2.1">
 Evidence Generation:  </dt>
-        <dd style="margin-left: 1.5em" id="section-4-2.2">
-          <p id="section-4-2.2.1">The retrieval of signed digests from an RTR based on a sequence of collected Claims about software component integrity (measurements).<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
+        <dd style="margin-left: 1.5em" id="section-2-2.2">
+          <p id="section-2-2.2.1">The retrieval of signed digests from an RTR based on a sequence of collected Claims about software component integrity (measurements).<a href="#section-2-2.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-4-2.3">
+<dt id="section-2-2.3">
 Evidence Conveyance:  </dt>
-        <dd style="margin-left: 1.5em" id="section-4-2.4">
-          <p id="section-4-2.4.1">The transfer of Evidence from the Attester to the Verifier via the Internet.<a href="#section-4-2.4.1" class="pilcrow">¶</a></p>
+        <dd style="margin-left: 1.5em" id="section-2-2.4">
+          <p id="section-2-2.4.1">The transfer of Evidence from the Attester to the Verifier via the Internet.<a href="#section-2-2.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-4-2.5">
+<dt id="section-2-2.5">
 Evidence Appraisal:  </dt>
-        <dd style="margin-left: 1.5em" id="section-4-2.6">
-          <p id="section-4-2.6.1">The validation of Evidence signatures as well as the assessment of Claim values in Evidence by comparing them with Reference Integrity Measurements (RIM).<a href="#section-4-2.6.1" class="pilcrow">¶</a></p>
+        <dd style="margin-left: 1.5em" id="section-2-2.6">
+          <p id="section-2-2.6.1">The validation of Evidence signatures as well as the assessment of Claim values in Evidence by comparing them with Reference Values.<a href="#section-2-2.6.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
+<p id="section-2-3">TUDA is specified in support of these RATS activities that align with the definitions presented in <span>[<a href="#PRIRA" class="xref">PRIRA</a>]</span> and <span>[<a href="#TCGGLOSS" class="xref">TCGGLOSS</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<div id="authenticity-of-evidence">
+<section id="section-2.1">
+        <h3 id="name-authenticity-of-evidence">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-authenticity-of-evidence" class="section-name selfRef">Authenticity of Evidence</a>
+        </h3>
+<p id="section-2.1-1">Remote attestation Evidence is composed of a set of Claims (assertions about the trustworthiness of an Attester's Target Environments) that is accompanied by a proof of its veracity -- typically a signature based on shielded, private, and potentially use-restricted key material used as an Authentication Secret as specified in section 6 of <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span> (or a secure channel as illustrated in <span>[<a href="#I-D.birkholz-rats-uccs" class="xref">I-D.birkholz-rats-uccs</a>]</span>).
+As key material alone is typically not self-descriptive with respect to its intended use (its semantics), the Evidence created via TUDA MUST be accompanied by two kinds of certificates that are cryptographically associated with a trust anchor (TA) <span>[<a href="#RFC4949" class="xref">RFC4949</a>]</span> via certification paths:<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.1-2.1">an Attestation Key (AK) Certificate (AK-Cert) that represents the attestation provenance of the Attesting Environment (see section 4.2. in <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>) that generates Evidence, and<a href="#section-2.1-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-2.1-2.2">an Endorsement Key (EK) Certificate (EK-Cert) that represents the Protection Capabilities of an Attesting Environment the AK is stored in.<a href="#section-2.1-2.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-2.1-3">If a Verifier decides to trust the TA of both an AK-Cert and an EK-Cert presented by an Attester -- and thereby the included Claims about the trustworthiness of an Attester's Target Environments -- the Evidence generated by the Attester can be considered trustable and believable.
+Ultimately, all trustable and believable Evidence MUST be appraised by a Verifier in order to assess the trustworthiness of the corresponding Attester.
+Assertions represented via Claims MUST NOT be considered believable by themselves.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.1-4">In this document, Evidence is generated via TPMs that come with an AK-Cert and a EK-Cert as a basis for believable Evidence generation.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="generating-evidence-about-software-component-integrity">
+<section id="section-2.2">
+        <h3 id="name-generating-evidence-about-s">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-generating-evidence-about-s" class="section-name selfRef">Generating Evidence about Software Component Integrity</a>
+        </h3>
+<p id="section-2.2-1">Evidence generated by a TPM for TUDA is based on measured hash values of all software components deployed in Target Environments (see section 4.2. in <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>) before they are executed ("measure then execute").
+The underlying concept of "Attestation Logs" is elaborated on in Section 2.4.2. of <span>[<a href="#I-D.fedorkow-rats-network-device-attestation" class="xref">I-D.fedorkow-rats-network-device-attestation</a>]</span>.
+This concept is implemented, for example, in the Linux kernel where it is called the Linux Integrity Measurement Architecture (IMA) <span>[<a href="#Safford" class="xref">Safford</a>]</span> and used to generates such a sequence of hash values.
+A representation for conveyance of corresponding event logs is described in the Canonical Event Log <span>[<a href="#CEL" class="xref">CEL</a>]</span> specification.
+Open source solutions, for example, based on <span>[<a href="#RFC5209" class="xref">RFC5209</a>]</span> use an IMA log to enable remote attestation <span>[<a href="#Steffens" class="xref">Steffens</a>]</span>.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">An Attester MUST generate such an event/measurement log.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="measurements-and-digests-generated-by-an-attester">
+<section id="section-2.3">
+        <h3 id="name-measurements-and-digests-ge">
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-measurements-and-digests-ge" class="section-name selfRef">Measurements and Digests Generated by an Attester</a>
+        </h3>
+<p id="section-2.3-1">A hash value of a software component is created before it is executed by Attesters.
+These hash values are typically represented as event log entries referred to as measurements, which often occur in large quantities.
+Capabilities such as Linux IMA can be used to generate these measurements on an Attester.
+Measurements are chained by Attesters using a rolling hash function.
+A TPM acts as a root of trust for storage (RTS) by providing an Extend (<span>[<a href="#TPM12" class="xref">TPM12</a>]</span>, <span>[<a href="#TPM2" class="xref">TPM2</a>]</span>) operation to feed hash values in a rolling hash function.
+Each measurement added to the sequence of all measurements results in a new current digest hash value.
+A TPM acts as a root of trust for reporting (RTR) by providing Quote (<span>[<a href="#TPM12" class="xref">TPM12</a>]</span>, <span>[<a href="#TPM2" class="xref">TPM2</a>]</span>) operations to generate a digest of all currently extended hash values as Evidence.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">TUDA requirements on TPM primitive operations and the information elements processed by them are illustrated using pseudo code in Appendix C and D.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="attesting-environments-and-roots-of-trust">
+<section id="section-2.4">
+        <h3 id="name-attesting-environments-and-">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-attesting-environments-and-" class="section-name selfRef">Attesting Environments and Roots of Trust</a>
+        </h3>
+<p id="section-2.4-1">The primitive operations used to generate an initial set of measurements at the beginning of an Attester's boot sequence MUST be provided by a Root of Trust for Measurement (RTM) that is a system component of the Attester.
+An RTM MUST be trusted via trust-relationships to TAs enabled by appropriate Endorsements (e.g.,EK-Certs).
+If a Verifier cannot trust an RTM, measurements based on values generated by the RTM MUST be considered invalid.
+At least one RTM MUST be accessible to the first Attesting Environment in Attester conducting Layered Attestation (see section 4.3. in <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>).
+An RTM MAY aggregate and retain measurements until the first RTS becomes available in a Layered Attestation procedure -- instead of feeding measurements into an RTS, instantly.
+The Protection Capabilities of an RTM to also act as a temporary RTS MUST be trusted via trust-relationships to TAs enabled by appropriate Endorsements.
+System components supporting the use of a TPM typically include such an appropriate RTM.
+In general, feeding measurements from an initial RTM into a TPM is automated and separated from Protected Capabilities that provide Claims collection from Target Environments that are regular execution environments.
+A TPM providing the Protection Capabilities for an isolated and shielded location to feed measurements into (integrity and confidentiality) is an appropriate RTS for TUDA.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4-2">The primitive operations used to store and chain measurements via a rolling hash function MUST be provided by an appropriate root of trust for storage (RTS) that is a system component of the Attester.
+An RTS MUST be trusted via trust-relationships to TAs enabled by appropriate Endorsements (e.g.,EK-Certs).
+If a Verifier cannot trust an RTS, Evidence generated based on digest values acquired from the RTS MUST be considered invalid.
+An RTS MUST be accessible to all Attesting Environments that are chained in a Layered Attestation procedure.
+A TPM providing the primitive operation for Extend is an appropriate RTM for TUDA.<a href="#section-2.4-2" class="pilcrow">¶</a></p>
+<p id="section-2.4-3">The primitive operations used to generate Evidence based on digests MUST be provided by roots of trust for reporting (RTR) that are system components of the Attester.
+An RTR MUST be be trusted via trust-relationships to TAs enabled by appropriate Endorsements (e.g.,EK-Certs).
+If a Verifier cannot trust an RTR, Evidence generated by the RTR MUST be considered invalid.
+A TPM providing the primitive operations for Quote is an appropriate RTR for TUDA.
+In a Composite Device (see Section 3.5. in <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span> conducting a Layered Attestation procedure, Attesting Environments MAY not be TPMs.
+At least one Attesting Environment MUST be a TPM.
+At least one TPM MUST act as an RTR.
+Attesting Environments that are not TPMs MUST NOT act as an RTR.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
+<p id="section-2.4-4">A concise definition of the terms RTM, RTS, and RTR can be found in the Trusted Computing Group (TCG) Glossary <span>[<a href="#TCGGLOSS" class="xref">TCGGLOSS</a>]</span>.
+An RTS and an RTR are often tightly coupled.
+In TUDA, a Trusted Platform Module (TPM, see <span>[<a href="#TPM12" class="xref">TPM12</a>]</span> and <span>[<a href="#TPM2" class="xref">TPM2</a>]</span>) takes on the roles of an RTS and an RTR.
+The specification in this document requires the use of a TPM as a component of the Attester.
+The protocol part of this specification can also be used with other RTS and RTR as long as essential functional requirements are satisfied (e.g., a trusted relative source of time, such as a tick-counter).
+A sequence of Layered Attestation using at least an RTM, RTS, and RTR enables an authenticated boot sequence typically referred to as Secure Boot.<a href="#section-2.4-4" class="pilcrow">¶</a></p>
+</section>
+</div>
 <div id="indeterministic-measurements">
-<section id="section-4.1">
+<section id="section-2.5">
         <h3 id="name-indeterministic-measurement">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-indeterministic-measurement" class="section-name selfRef">Indeterministic Measurements</a>
+<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-indeterministic-measurement" class="section-name selfRef">Indeterministic Measurements</a>
         </h3>
-<p id="section-4.1-1">The sequence of measurements that is extended into the RTS may not be deterministic (e.g., due to parallelization of or race conditions between starting software components in user space). In order to enable appraisal in these case, a corresponding event log that records all measurements in sequence, such as the IMA log, has to be conveyed next to the Evidence as depicted in section 8.2. in <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span>. The Verifier has to replay the event log using its own extend operation with an identical rolling hash function in order to generate reference value as outlined in section 2.4.1. of <span>[<a href="#I-D.fedorkow-rats-network-device-attestation" class="xref">I-D.fedorkow-rats-network-device-attestation</a>]</span>. The validity of each event log record must be appraised individually by the Verifier in order to infer if each started software component satisfies integrity requirements. This appraisal process requires Reference Integrity Measurements as are provided via <span>[<a href="#I-D.birkholz-rats-coswid-rim" class="xref">I-D.birkholz-rats-coswid-rim</a>]</span> or <span>[<a href="#TCGRIM" class="xref">TCGRIM</a>]</span>. Each RIM includes the information required to associate hash values of software components included in an event log with nominal reference hash values in the RIM. A Verifier requires an appropriate set of RIMs to compare every record in an event log successfully. The acquisition of RIMs and corresponding procedures are out-of-scope of this document.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.5-1">The sequence of measurements that is extended into the RTS provided by a TPM may not be deterministic due to race conditions that are side-effects of parallelization.
+Parallelization occurs, for example, between different isolated execution environments or separate software components started in a execution environment.
+In order to enable the appraisal of Evidence in cases where sequence of measurement varies, a corresponding event log that records all measurements in sequence, such as the IMA log, has to be conveyed next to the Evidence as depicted in section 8.2. in <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span>.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.5-2">In contrast to Evidence, event logs do not necessarily have to be integrity protected or tamper-evident.
+Event logs are conveyed to a Verifier in order to compute the reference values required for comparison with digest values (output of TPM Quote operations).
+While digest values MUST constitute Evidence, measurements in event logs MAY be part of Evidence, but do not have to be MAY be conveyed separately.
+If the values in event logs or their sequence are tampered with before or during conveyance from an Attester to a Verifier, the corresponding Evidence Appraisal fails.
+While this dependency reflects the intended behavior of RATS, integrity protected or tamper-evident can be beneficial or convenient in some usage scenarios.
+Additionally, event logs my allow insights into the composition of an Attester and typically come with confidentiality requirements.<a href="#section-2.5-2" class="pilcrow">¶</a></p>
+<p id="section-2.5-3">In order to compute reference values to compare digest Claims in Evidence with, a Verifier MUST be able to replay the rolling hash function of the Extend operation provided by a TPM (see Section 2.4.2. in <span>[<a href="#I-D.fedorkow-rats-network-device-attestation" class="xref">I-D.fedorkow-rats-network-device-attestation</a>]</span>).<a href="#section-2.5-3" class="pilcrow">¶</a></p>
+<p id="section-2.5-4">A Verifier has to replay the event log using its own extend operation with an identical rolling hash function in order to generate reference values as outlined in section 2.4.1. of <span>[<a href="#I-D.fedorkow-rats-network-device-attestation" class="xref">I-D.fedorkow-rats-network-device-attestation</a>]</span>.
+During reply, the validity of each event log record MUST be appraised individually by the Verifier in order to infer if each started software component satisfies integrity requirements.
+These appraisal procedures require Reference Integrity Measurements/Manifests (RIM) as are provided via <span>[<a href="#I-D.birkholz-rats-coswid-rim" class="xref">I-D.birkholz-rats-coswid-rim</a>]</span> or <span>[<a href="#TCGRIM" class="xref">TCGRIM</a>]</span>.
+Each RIM includes Reference Values that are nominal reference hash values for sets of software components.
+The Reference Values can be compared with hash values about executed software components included in an event log.
+A Verifier requires an appropriate set of RIMs to compare every record in an event log successfully.
+RIMs or other sets Reverence Value are supplied by Reference Value Providers as defined in the RATS Architecture <span>[<a href="#I-D.ietf-rats-architecture" class="xref">I-D.ietf-rats-architecture</a>]</span>.
+Corresponding procedures that enable a Verifier to acquire Reference Values are out-of-scope of this document.<a href="#section-2.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="principles-of-uni-directional-and-time-based-attestation">
-<section id="section-4.2">
-        <h3 id="name-principles-of-uni-direction">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-principles-of-uni-direction" class="section-name selfRef">Principles of Uni-Directional and Time-Based Attestation</a>
-        </h3>
-<p id="section-4.2-1">Traditional remote attestation protocols typically use bi-directional challenge/response interaction models. Examples include the Platform Trust Service protocol <span>[<a href="#PTS" class="xref">PTS</a>]</span> or CAVES <span>[<a href="#PRIRA" class="xref">PRIRA</a>]</span>, where one entity sends a challenge that is included inside the response to prove the freshness of Evidence via recentness. The corresponding interaction model depicted in section 8.1. of <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span> tightly couples the three operations of generating, conveying and appraising Evidence.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">The Time-Based Uni-directional Attestation family of protocols can decouple these three operations. As a result, TUDA provides additional capabilities, such as:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="tuda-principles-and-requirements">
+<section id="section-3">
+      <h2 id="name-tuda-principles-and-require">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-tuda-principles-and-require" class="section-name selfRef">TUDA Principles and Requirements</a>
+      </h2>
+<p id="section-3-1">Traditional remote attestation protocols typically use bi-directional challenge/response interaction models. Examples include the Platform Trust Service protocol <span>[<a href="#PTS" class="xref">PTS</a>]</span> or CAVES <span>[<a href="#PRIRA" class="xref">PRIRA</a>]</span>, where one entity sends a challenge that is included inside the response to prove the freshness of Evidence via recentness. The corresponding interaction model depicted in Section 8.1. of <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span> tightly couples the three RATS activities of generating, conveying and appraising Evidence.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">Time-Based Uni-directional Attestation can decouple these three activities. As a result, TUDA provides additional capabilities, such as:<a href="#section-3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-3.1">remote attestation for Attesters that might not always be able to reach the Internet by enabling the appraisal of past states,<a href="#section-4.2-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-3-3.1">remote attestation for Attesters that might not always be able to reach the Internet by enabling the appraisal of past states,<a href="#section-3-3.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.2-3.2">secure audit logs by combining the Evidence generated with integrity measurement logs (e.g. IMA logs) that represent a detailed record of corresponding past states,<a href="#section-4.2-3.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-3-3.2">secure audit logs by combining the Evidence generated with integrity measurement logs (e.g. IMA logs) that represent a detailed record of corresponding past states,<a href="#section-3-3.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.2-3.3">the use of the uni-directional interaction model <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span> that can traverse "diode-like" network security functions (NSF) or can be leveraged RESTful telemetry as enabled by the CoAP Observe option <span>[<a href="#RFC7252" class="xref">RFC7252</a>]</span>).<a href="#section-4.2-3.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-3-3.3">the use of the uni-directional interaction model <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span> that can traverse "diode-like" network security functions (NSF) or can be leveraged RESTful telemetry as enabled by the CoAP Observe option <span>[<a href="#RFC7252" class="xref">RFC7252</a>]</span>).<a href="#section-3-3.3" class="pilcrow">¶</a>
+</li>
+      </ul>
+<div id="attesting-environment-requirements">
+<section id="section-3.1">
+        <h3 id="name-attesting-environment-requi">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-attesting-environment-requi" class="section-name selfRef">Attesting Environment Requirements</a>
+        </h3>
+<p id="section-3.1-1">An Attesting Environment that generates Evidence in TUDA MUST support three specific Protected Capabilities:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1-2.1">Platform Configuration Registers (PCR) that can extend measurements consecutively and represent the sequence of measurements as a single digest,<a href="#section-3.1-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.1-2.2">Restricted Signing Keys (RSK) that can only be accessed, if a specific signature about a set of measurements can be provided as authentication, and<a href="#section-3.1-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.1-2.3">a dedicated source of (relative) time, e.g. a tick counter (a tick being a specific time interval, for example 10 ms).<a href="#section-3.1-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
+<p id="section-3.1-3">A TPM is capable of providing these Protected Capabilities for TUDA.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="tuda-attesting-environment-requirements">
-<section id="section-4.3">
-        <h3 id="name-tuda-attesting-environment-">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-tuda-attesting-environment-" class="section-name selfRef">TUDA Attesting Environment Requirements</a>
+<div id="handle-distributor-requirements-time-stamp-authority">
+<section id="section-3.2">
+        <h3 id="name-handle-distributor-requirem">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-handle-distributor-requirem" class="section-name selfRef">Handle Distributor Requirements: Time Stamp Authority</a>
         </h3>
-<p id="section-4.3-1">Evidence generation in TUDA requires certain features implemented by theTarget Environment<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">TUDA is a family of protocols that bundles results from specific attestation activities. The attestation activities of TUDA are based on roots of trust that provide the following specific capabilities:<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.3-3.1">Platform Configuration Registers (PCR) that can extend measurements consecutively and represent the sequence of measurements as a single digest,<a href="#section-4.3-3.1" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.3-3.2">Restricted Signing Keys (RSK) that can only be accessed, if a specific signature about a set of measurements can be provided as authentication, and<a href="#section-4.3-3.2" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.3-3.3">a dedicated source of (relative) time, e.g. a tick counter (a tick being a specific time interval, for example 10 ms).<a href="#section-4.3-3.3" class="pilcrow">¶</a>
-</li>
-        </ul>
+<p id="section-3.2-1">Both Evidence generation and Evidence appraisal require a Handle Distributor that can take on the role of a trusted Time Stamp Authority (TSA) as an additional third party.
+Time Stamp Tokens (TST) included in Handles MUST be generated by Time Stamp Authority based on <span>[<a href="#RFC3161" class="xref">RFC3161</a>]</span> that acts as the Handle Distributor.
+The combination of a local source of time provided by a TPM (on the Attester) and the TST provided by the Handle Distributor (to both the Attester and the Verifier) enable an appropriate proof of freshness.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="tuda-handle-distributor-time-stamp-authority">
-<section id="section-4.4">
-        <h3 id="name-tuda-handle-distributor-tim">
-<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-tuda-handle-distributor-tim" class="section-name selfRef">TUDA Handle Distributor: Time Stamp Authority</a>
-        </h3>
-<p id="section-4.4-1">Both Evidence Generation and Evidence Appraisal of TUDA require a Handle Distributor that can take on the role of a trusted Time Stamp Authority (TSA) as an additional third party.
-This TUDA specification uses a Time Stamp Authority based on <span>[<a href="#RFC3161" class="xref">RFC3161</a>]</span>. The combination of the local source of time provided by a RoT (located on the Attester) and the Time Stamp Tokens provided by the Handle Distributor (to both the Attester and the Verifier) enable an appropriate assertion of freshness.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="information-elements-and-conveyance">
-<section id="section-4.5">
-        <h3 id="name-information-elements-and-co">
-<a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-information-elements-and-co" class="section-name selfRef">Information Elements and Conveyance</a>
-        </h3>
-<p id="section-4.5-1">TUDA defines a set of information elements (IE) that are created and stored on the Attester and are intended to be transferred to the Verifier in order to enable the appraisal of Evidence. Each TUDA IE:<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<section id="section-4">
+      <h2 id="name-information-elements-and-co">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-information-elements-and-co" class="section-name selfRef">Information Elements and Conveyance</a>
+      </h2>
+<p id="section-4-1">TUDA defines a set of information elements (IE) that represent a set of Claims, are generated and stored on the Attester, and are intended to be transferred to the Verifier in order to enable the appraisal of Evidence. Each TUDA IE:<a href="#section-4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5-2.1">is encoded in the Concise Binary Object Representation (CBOR <span>[<a href="#RFC7049" class="xref">RFC7049</a>]</span>) to minimize the volume of data in motion. In this document, the composition of the CBOR data items that represent IE is described using the Concise Data Definition Language, CDDL <span>[<a href="#RFC8610" class="xref">RFC8610</a>]</span><a href="#section-4.5-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4-2.1">MUST be encoded in the Concise Binary Object Representation (CBOR <span>[<a href="#RFC7049" class="xref">RFC7049</a>]</span>) to minimize the volume of data in motion. In this document, the composition of the CBOR data items that represent IE is described using the Concise Data Definition Language, CDDL <span>[<a href="#RFC8610" class="xref">RFC8610</a>]</span><a href="#section-4-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.5-2.2">that requires a certain freshness is only created/updated when out-dated, which reduces the overall resources required from the Attester, including the use of RoTs. The IE that have to be created are determined by their age or by specific state changes on the Attester (e.g. state changes due to a reboot-cycle)<a href="#section-4.5-2.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-2.2">that requires a certain freshness SHOULD only be re-generated when out-dated (not fresh, but stale), which reduces the overall resources required from the Attester, including the usage of a TPM's resources (re-generation of IE is determined by their age or by specific state changes on the Attester, e.g., due to a reboot-cycle)<a href="#section-4-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.5-2.3">is only transferred when required, which reduces the amount of data in motion necessary to conduct remote attestation significantly. Only IE that have changed since their last conveyance have to be transferred<a href="#section-4.5-2.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-2.3">SHOULD only be transferred when required, which reduces the amount of data in motion necessary to conduct remote attestation significantly (only IE that have changed since their last conveyance have to be transferred)<a href="#section-4-2.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.5-2.4">that requires a certain freshness can be reused for multiple remote attestation procedures in the limits of its corresponding freshness-window, further reducing the load imposed on the Attester and its corresponding RoT.<a href="#section-4.5-2.4" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-2.4">that requires a certain freshness SHOULD be reused for multiple remote attestation procedures in the limits of its corresponding freshness-window, further reducing the load imposed on the Attester and corresponding TPMs.<a href="#section-4-2.4" class="pilcrow">¶</a>
 </li>
-        </ul>
-</section>
-</div>
-<div id="tuda-objectives">
-<section id="section-4.6">
-        <h3 id="name-tuda-objectives">
-<a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-tuda-objectives" class="section-name selfRef">TUDA Objectives</a>
-        </h3>
-<p id="section-4.6-1">The Time-Based Uni-directional Attestation family of protocols is designed to:<a href="#section-4.6-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.6-2.1">increase the confidence in authentication and authorization procedures,<a href="#section-4.6-2.1" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.6-2.2">address the requirements of constrained-node networks,<a href="#section-4.6-2.2" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.6-2.3">support interaction models that do not maintain connection-state over time, such as REST architectures <span>[<a href="#REST" class="xref">REST</a>]</span>,<a href="#section-4.6-2.3" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.6-2.4">be able to leverage existing management interfaces, such as SNMP <span>[<a href="#RFC3411" class="xref">RFC3411</a>]</span>. RESTCONF <span>[<a href="#RFC8040" class="xref">RFC8040</a>]</span> or CoMI <span>[<a href="#I-D.ietf-core-comi" class="xref">I-D.ietf-core-comi</a>]</span> --- and corresponding bindings,<a href="#section-4.6-2.4" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.6-2.5">support broadcast and multicast schemes (e.g. <span>[<a href="#IEEE1609" class="xref">IEEE1609</a>]</span>),<a href="#section-4.6-2.5" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.6-2.6">be able to cope with temporary loss of connectivity, and to<a href="#section-4.6-2.6" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.6-2.7">provide trustworthy audit logs of past endpoint states.<a href="#section-4.6-2.7" class="pilcrow">¶</a>
-</li>
-        </ul>
-</section>
-</div>
-<div id="hardware-dependencies">
-<section id="section-4.7">
-        <h3 id="name-hardware-dependencies">
-<a href="#section-4.7" class="section-number selfRef">4.7. </a><a href="#name-hardware-dependencies" class="section-name selfRef">Hardware Dependencies</a>
-        </h3>
-<p id="section-4.7-1">The binding of the attestation scheme used by TUDA to generate the TUDA IE is specific to the methods provided by the RoT used (see above). In this document, expositional text and pseudo-code that is based on TPM 1.2 and TPM 2.0 operations. The corresponding TPM commands are specified in <span>[<a href="#TPM12" class="xref">TPM12</a>]</span> and <span>[<a href="#TPM2" class="xref">TPM2</a>]</span>. The references to TPM commands and corresponding pseudo-code only serve as guidance to enable a better understanding of the attestation scheme and is intended to encourage the use of any appropriate RoT, for example, an equivalent set of functions available to an embedded Secure Element or Trusted Execution Environment <span>[<a href="#TEE" class="xref">TEE</a>]</span>.<a href="#section-4.7-1" class="pilcrow">¶</a></p>
-</section>
-</div>
+      </ul>
 </section>
 </div>
 <div id="tuda-core-concept">
@@ -1402,37 +1428,36 @@ This TUDA specification uses a Time Stamp Authority based on <span>[<a href="#RF
       <h2 id="name-tuda-core-concept">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-tuda-core-concept" class="section-name selfRef">TUDA Core Concept</a>
       </h2>
-<p id="section-5-1">There are significant differences between conventional bi-directional attestation and TUDA regarding both the information elements conveyed between Attester and Verifier and the time-frame, in which an attestation can be considered to be fresh (and therefore trustworthy).<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">In general, remote attestation using a bi-directional communication scheme includes sending a nonce-challenge within a signed Evidence token. Using the TPM 1.2 as an example, a corresponding nonce-challenge would be included within the signature created by the TPM_Quote command in order to prove the freshness of a response containing evidence, see e.g. <span>[<a href="#PTS" class="xref">PTS</a>]</span>.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<p id="section-5-3">In contrast, the TUDA protocol uses the combined output of TPM_CertifyInfo and TPM_TickStampBlob. The former provides a proof about the Attester's state by creating Evidence that a certain key is bound to that state. The latter provides proof that the Attester was in the specified state by using the bound key in a time operation. This combination enables a time-based attestation scheme. The approach is based on the concepts introduced in <span>[<a href="#SCALE" class="xref">SCALE</a>]</span> and <span>[<a href="#SFKE2008" class="xref">SFKE2008</a>]</span>.<a href="#section-5-3" class="pilcrow">¶</a></p>
-<p id="section-5-4">Each TUDA IE has an individual time-frame, in which it is considered to be fresh (and therefore valid and trustworthy). In consequence, each TUDA IE that composes data in motion is based on different methods of creation.<a href="#section-5-4" class="pilcrow">¶</a></p>
-<p id="section-5-5">As highlighted above, the freshness properties of a challenge-response based protocol enable implicit time-keeping via a time window between:<a href="#section-5-5" class="pilcrow">¶</a></p>
+<p id="section-5-1">Traditional Challenge/Response Remote Attestation <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span> includes sending a nonce in the challenge to be used in ad-hoc Evidence generation. Using the TPM 1.2 as an example, a corresponding nonce-challenge would be included within the signature created by the TPM_Quote command in order to prove the freshness of a response containing evidence, see e.g. <span>[<a href="#PTS" class="xref">PTS</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">In contrast, the TUDA protocol uses the combined output of TPM_CertifyInfo and TPM_TickStampBlob. The former provides a proof about the Attester's state by creating Evidence that a certain key is bound to that state. The latter provides proof that the Attester was in the specified state by using the bound key in a time operation. This combination enables a time-based attestation scheme. The approach is based on the concepts introduced in <span>[<a href="#SCALE" class="xref">SCALE</a>]</span> and <span>[<a href="#SFKE2008" class="xref">SFKE2008</a>]</span>.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-3">Each TUDA IE has an individual time-frame, in which it is considered to be fresh (and therefore valid and trustworthy). In consequence, each TUDA IE that composes data in motion is based on different methods of creation.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">As highlighted above, the freshness properties of a challenge-response based protocol enable implicit time-keeping via a time window between:<a href="#section-5-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5-6.1">the time of transmission of the nonce, and<a href="#section-5-6.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5-5.1">the time of transmission of the nonce, and<a href="#section-5-5.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-5-6.2">the reception of the corresponding response.<a href="#section-5-6.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-5-5.2">the reception of the corresponding response.<a href="#section-5-5.2" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-5-7">Given the time-based attestation scheme, the freshness property of TUDA is equivalent to that of bi-directional challenge response attestation, if the point-in-time of attestation lies between:<a href="#section-5-7" class="pilcrow">¶</a></p>
+<p id="section-5-6">Given the time-based attestation scheme, the freshness property of TUDA is equivalent to that of bi-directional challenge response attestation, if the point-in-time of attestation lies between:<a href="#section-5-6" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5-8.1">the transmission of a TUDA time-synchronization token, and<a href="#section-5-8.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5-7.1">the transmission of a TUDA time-synchronization token, and<a href="#section-5-7.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-5-8.2">the typical round-trip time between the Verifier and the Attester.<a href="#section-5-8.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-5-7.2">the typical round-trip time between the Verifier and the Attester.<a href="#section-5-7.2" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-5-9">The accuracy of this time-frame is defined by two factors:<a href="#section-5-9" class="pilcrow">¶</a></p>
+<p id="section-5-8">The accuracy of this time-frame is defined by two factors:<a href="#section-5-8" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5-10.1">the time-synchronization between the Attester and the Handle Distributor. The time between the two tickstamps acquired via the RoT define the scope of the maximum drift (time "left" and time "right" in respect to the timeline) to the handle including the signed timestamp, and<a href="#section-5-10.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5-9.1">the time-synchronization between the Attester and the Handle Distributor. The time between the two tickstamps acquired via the RoT define the scope of the maximum drift (time "left" and time "right" in respect to the timeline) to the handle including the signed timestamp, and<a href="#section-5-9.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-5-10.2">the drift of clocks included in the RoT.<a href="#section-5-10.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-5-9.2">the drift of clocks included in the RoT.<a href="#section-5-9.2" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-5-11">Since the conveyance of TUDA Evidence does not rely upon a Verifier provided value (i.e. the nonce), the security guarantees of the protocol only incorporate the Handle Distributor and the RoT used. In consequence, TUDA Evidence can even serve as proof of integrity in audit logs with precise point-in-time guarantees.<a href="#section-5-11" class="pilcrow">¶</a></p>
-<p id="section-5-12"><a href="#rest" class="xref">Appendix A</a> contains guidance on how to utilize a REST architecture.<a href="#section-5-12" class="pilcrow">¶</a></p>
-<p id="section-5-13"><a href="#snmp" class="xref">Appendix B</a> contains guidance on how to create an SNMP binding and a corresponding TUDA-MIB.<a href="#section-5-13" class="pilcrow">¶</a></p>
-<p id="section-5-14"><a href="#yang" class="xref">Appendix C</a> contains a corresponding YANG module that supports both RESTCONF and CoREDONF.<a href="#section-5-14" class="pilcrow">¶</a></p>
-<p id="section-5-15"><a href="#tpm12" class="xref">Appendix D.2</a> contains a realization of TUDA using TPM 1.2 primitives.<a href="#section-5-15" class="pilcrow">¶</a></p>
-<p id="section-5-16"><a href="#tpm2" class="xref">Appendix D.3</a> contains a realization of TUDA using TPM 2.0 primitives.<a href="#section-5-16" class="pilcrow">¶</a></p>
+<p id="section-5-10">Since the conveyance of TUDA Evidence does not rely upon a Verifier provided value (i.e. the nonce), the security guarantees of the protocol only incorporate the Handle Distributor and the RoT used. In consequence, TUDA Evidence can even serve as proof of integrity in audit logs with precise point-in-time guarantees.<a href="#section-5-10" class="pilcrow">¶</a></p>
+<p id="section-5-11"><a href="#rest" class="xref">Appendix A</a> contains guidance on how to utilize a REST architecture.<a href="#section-5-11" class="pilcrow">¶</a></p>
+<p id="section-5-12"><a href="#snmp" class="xref">Appendix B</a> contains guidance on how to create an SNMP binding and a corresponding TUDA-MIB.<a href="#section-5-12" class="pilcrow">¶</a></p>
+<p id="section-5-13"><a href="#yang" class="xref">Appendix C</a> contains a corresponding YANG module that supports both RESTCONF and CoREDONF.<a href="#section-5-13" class="pilcrow">¶</a></p>
+<p id="section-5-14"><a href="#tpm12" class="xref">Appendix D.2</a> contains a realization of TUDA using TPM 1.2 primitives.<a href="#section-5-14" class="pilcrow">¶</a></p>
+<p id="section-5-15"><a href="#tpm2" class="xref">Appendix D.3</a> contains a realization of TUDA using TPM 2.0 primitives.<a href="#section-5-15" class="pilcrow">¶</a></p>
 <div id="tpm-specific-terms">
 <section id="section-5.1">
         <h3 id="name-tpm-specific-terms">
@@ -1533,7 +1558,7 @@ Concise SWID tags:  </dt>
 </dd>
       <dd class="break"></dd>
 </dl>
-<p id="section-6-3">These information elements can be sent en bloc, but it is recommended 
+<p id="section-6-3">These information elements can be sent en bloc, but it is recommended
 to retrieve them separately to save bandwidth, since these
 elements have different update cycles. In most cases, retransmitting
 all seven information elements would result in unnecessary redundancy.<a href="#section-6-3" class="pilcrow">¶</a></p>
@@ -1572,7 +1597,7 @@ This includes the content of PCRs of a hardware RoT and thereby also the PCR-res
 <p id="section-6.1-6">The third event listed above is variable per application use case and also depends on the precision of the clock included in the RoT.
 For usage scenarios, in which the Attester would periodically
 push information to be used in an audit-log, a time-frame of approximately one update per minute should be sufficient. For those usage scenarios, where Verifiers request (pull) fresh Evidence, an implementation could potentially use a TPM continuously to always present the most freshly created Evidence. This kind of utilization can result in a bottle-neck with respect to other purposes: if unavoidable, a periodic interval of once per ten seconds is recommended, which typically leaves about 80% of available TPM resource for other applications.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
-<p id="section-6.1-7">The following diagram is based on the reference interaction model found in section 8.1. of <span>[<a href="#I-D.birkholz-rats-reference-interaction-model" class="xref">I-D.birkholz-rats-reference-interaction-model</a>]</span> and is enriched with the IE update cycles defined in this section.<a href="#section-6.1-7" class="pilcrow">¶</a></p>
+<p id="section-6.1-7">The following diagram is based on the reference interaction model found in section 8.1. of <span>[<a href="#I-D.ietf-rats-reference-interaction-models" class="xref">I-D.ietf-rats-reference-interaction-models</a>]</span> and is enriched with the IE update cycles defined in this section.<a href="#section-6.1-7" class="pilcrow">¶</a></p>
 <span id="name-example-sequence-of-events"></span><div id="SequenceExample">
 <figure id="figure-1">
           <div class="artwork art-text alignLeft" id="section-6.1-8.1">
@@ -1703,6 +1728,10 @@ type definitions.<a href="#section-8-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Sangster, P.</span><span class="refAuthor">, Khosravi, H.</span><span class="refAuthor">, Mani, M.</span><span class="refAuthor">, Narayan, K.</span><span class="refAuthor">, and J. Tardo</span>, <span class="refTitle">"Network Endpoint Assessment (NEA): Overview and Requirements"</span>, <span class="seriesInfo">RFC 5209</span>, <span class="seriesInfo">DOI 10.17487/RFC5209</span>, <time datetime="2008-06" class="refDate">June 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5209">https://www.rfc-editor.org/info/rfc5209</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC5247">[RFC5247]</dt>
+        <dd>
+<span class="refAuthor">Aboba, B.</span><span class="refAuthor">, Simon, D.</span><span class="refAuthor">, and P. Eronen</span>, <span class="refTitle">"Extensible Authentication Protocol (EAP) Key Management Framework"</span>, <span class="seriesInfo">RFC 5247</span>, <span class="seriesInfo">DOI 10.17487/RFC5247</span>, <time datetime="2008-08" class="refDate">August 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5247">https://www.rfc-editor.org/info/rfc5247</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC6690">[RFC6690]</dt>
         <dd>
 <span class="refAuthor">Shelby, Z.</span>, <span class="refTitle">"Constrained RESTful Environments (CoRE) Link Format"</span>, <span class="seriesInfo">RFC 6690</span>, <span class="seriesInfo">DOI 10.17487/RFC6690</span>, <time datetime="2012-08" class="refDate">August 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6690">https://www.rfc-editor.org/info/rfc6690</a>&gt;</span>. </dd>
@@ -1770,13 +1799,17 @@ type definitions.<a href="#section-8-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">TCG Infrastructure Working Group</span>, <span class="refTitle">"A CMC Profile for AIK Certificate Enrollment"</span>, <time datetime="2011" class="refDate">2011</time>, <span>&lt;<a href="https://www.trustedcomputinggroup.org/wp-content/uploads/IWG_CMC_Profile_Cert_Enrollment_v1_r7.pdf">https://www.trustedcomputinggroup.org/wp-content/uploads/IWG_CMC_Profile_Cert_Enrollment_v1_r7.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="CEL">[CEL]</dt>
+        <dd>
+<span class="refAuthor">TCG TNC Working Group</span>, <span class="refTitle">"DRAFT Canonical Event Log Format Version: 1.0, Revision: .12"</span>, <time datetime="2018" class="refDate">2018</time>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.birkholz-rats-coswid-rim">[I-D.birkholz-rats-coswid-rim]</dt>
         <dd>
 <span class="refAuthor">Birkholz, H.</span><span class="refAuthor">, Uiterwijk, P.</span><span class="refAuthor">, Smith, N.</span><span class="refAuthor">, Fitzgerald-McKay, J.</span><span class="refAuthor">, Waltermire, D.</span><span class="refAuthor">, and S. Bhandari</span>, <span class="refTitle">"Reference Integrity Measurement Extension for Concise Software Identities"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-birkholz-rats-coswid-rim-01</span>, <time datetime="2020-07-13" class="refDate">13 July 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-birkholz-rats-coswid-rim-01.txt">http://www.ietf.org/internet-drafts/draft-birkholz-rats-coswid-rim-01.txt</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.birkholz-rats-reference-interaction-model">[I-D.birkholz-rats-reference-interaction-model]</dt>
+<dt id="I-D.birkholz-rats-uccs">[I-D.birkholz-rats-uccs]</dt>
         <dd>
-<span class="refAuthor">Birkholz, H.</span><span class="refAuthor">, Eckel, M.</span><span class="refAuthor">, Newton, C.</span><span class="refAuthor">, and L. Chen</span>, <span class="refTitle">"Reference Interaction Models for Remote Attestation Procedures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-birkholz-rats-reference-interaction-model-03</span>, <time datetime="2020-07-07" class="refDate">7 July 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-birkholz-rats-reference-interaction-model-03.txt">http://www.ietf.org/internet-drafts/draft-birkholz-rats-reference-interaction-model-03.txt</a>&gt;</span>. </dd>
+<span class="refAuthor">Birkholz, H.</span><span class="refAuthor">, O'Donoghue, J.</span><span class="refAuthor">, Cam-Winget, N.</span><span class="refAuthor">, and C. Bormann</span>, <span class="refTitle">"A CBOR Tag for Unprotected CWT Claims Sets"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-birkholz-rats-uccs-02</span>, <time datetime="2020-12-02" class="refDate">2 December 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-birkholz-rats-uccs-02.txt">http://www.ietf.org/internet-drafts/draft-birkholz-rats-uccs-02.txt</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.fedorkow-rats-network-device-attestation">[I-D.fedorkow-rats-network-device-attestation]</dt>
         <dd>
@@ -1789,6 +1822,10 @@ type definitions.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <dt id="I-D.ietf-rats-architecture">[I-D.ietf-rats-architecture]</dt>
         <dd>
 <span class="refAuthor">Birkholz, H.</span><span class="refAuthor">, Thaler, D.</span><span class="refAuthor">, Richardson, M.</span><span class="refAuthor">, Smith, N.</span><span class="refAuthor">, and W. Pan</span>, <span class="refTitle">"Remote Attestation Procedures Architecture"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-architecture-08</span>, <time datetime="2020-12-08" class="refDate">8 December 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-rats-architecture-08.txt">http://www.ietf.org/internet-drafts/draft-ietf-rats-architecture-08.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-rats-reference-interaction-models">[I-D.ietf-rats-reference-interaction-models]</dt>
+        <dd>
+<span class="refAuthor">Birkholz, H.</span><span class="refAuthor">, Eckel, M.</span><span class="refAuthor">, Newton, C.</span><span class="refAuthor">, and L. Chen</span>, <span class="refTitle">"Reference Interaction Models for Remote Attestation Procedures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-reference-interaction-models-01</span>, <time datetime="2020-10-23" class="refDate">23 October 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-rats-reference-interaction-models-01.txt">http://www.ietf.org/internet-drafts/draft-ietf-rats-reference-interaction-models-01.txt</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-sacm-coswid">[I-D.ietf-sacm-coswid]</dt>
         <dd>
@@ -1880,7 +1917,7 @@ type definitions.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="TPM2">[TPM2]</dt>
       <dd>
-<span class="refTitle">"Trusted Platform Module Library Specification, Family 2.0, Level 00, Revision 01.16 ed., Trusted Computing Group"</span>, <time datetime="2014" class="refDate">2014</time>. </dd>
+<span class="refAuthor">Trusted Computing Group</span>, <span class="refTitle">"Trusted Platform Module Library Specification, Family 2.0, Level 00, Revision 01.16 ed."</span>, <time datetime="2014" class="refDate">2014</time>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -1926,7 +1963,7 @@ large. Therefore, read-only cycle counter scalar objects in all TUDA MIB object
 groups facilitate more efficient access with SNMP GetNext requests.<a href="#section-appendix.b-3.2" class="pilcrow">¶</a>
 </li>
         <li id="section-appendix.b-3.3">Notifications are supported by an SNMP trap definition with all of the cycle
-counters as bindings, to alert a Verifier that a new attestation cycle has 
+counters as bindings, to alert a Verifier that a new attestation cycle has
 occurred (e.g., synchronization data, measurement log, etc. have been updated
 by adding new rows and possibly deleting old rows).<a href="#section-appendix.b-3.3" class="pilcrow">¶</a>
 </li>
