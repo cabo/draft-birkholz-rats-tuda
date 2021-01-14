@@ -5,11 +5,11 @@
 RATS Working Group                                              A. Fuchs
 Internet-Draft                                               H. Birkholz
 Intended status: Standards Track                          Fraunhofer SIT
-Expires: 17 July 2021                                        I. McDonald
+Expires: 18 July 2021                                        I. McDonald
                                                           High North Inc
                                                               C. Bormann
                                                  Universitaet Bremen TZI
-                                                         13 January 2021
+                                                         14 January 2021
 
 
                  Time-Based Uni-Directional Attestation
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 July 2021.
+   This Internet-Draft will expire on 18 July 2021.
 
 Copyright Notice
 
@@ -973,12 +973,12 @@ evidenceGeneration(handle, authSecIDs, collectedClaims)           |
               Version: 1.0, Revision: .12", 2018.
 
    [I-D.birkholz-rats-coswid-rim]
-              Birkholz, H., Uiterwijk, P., Smith, N., Fitzgerald-McKay,
-              J., Waltermire, D., and S. Bhandari, "Reference Integrity
-              Measurement Extension for Concise Software Identities",
-              Work in Progress, Internet-Draft, draft-birkholz-rats-
-              coswid-rim-01, 13 July 2020, <http://www.ietf.org/
-              internet-drafts/draft-birkholz-rats-coswid-rim-01.txt>.
+              Birkholz, H., Uiterwijk, P., Waltermire, D., Bhandari, S.,
+              and J. Fitzgerald-McKay, "Reference Integrity Measurement
+              Extension for Concise Software Identities", Work in
+              Progress, Internet-Draft, draft-birkholz-rats-coswid-rim-
+              02, 13 January 2021, <http://www.ietf.org/internet-drafts/
+              draft-birkholz-rats-coswid-rim-02.txt>.
 
    [I-D.birkholz-rats-uccs]
               Birkholz, H., O'Donoghue, J., Cam-Winget, N., and C.
